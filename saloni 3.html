@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Saloni Singh Shekhawat | Fashion Designer</title>
+<style>
+  /* Reset and base */
+  *, *::before, *::after {
+    box-sizing: border-box;
+  }
+
+  :root {
+    --bg-color: #9C746B;
+    --text-color: black;
+    --border-color: black;
+    --accent-color: white;
+    --sidebar-bg: rgba(0,0,0,0.2);
+    --label-bg: rgba(255,255,255,0.6);
+    --skills-bg: rgba(0,0,0,0.2);
+    --item-bg: rgba(255,255,255,0.8);
+    --item-shadow: rgba(0,0,0,0.3);
+    --item-hover-shadow: rgba(0,0,0,0.5);
+    --glow-color: white;
+    --label-hover-bg: var(--text-color);
+    --label-hover-color: var(--accent-color);
+    /* Theme toggle variables */
+    --slider-bg: var(--bg-color);
+    --knob-bg: white;
+  }
+
+  :root:has(#dark-mode:checked) {
+    --bg-color: black;
+    --text-color: white;
+    --border-color: white;
+    --accent-color: #9C746B;
+    --sidebar-bg: rgba(255,255,255,0.2);
+    --label-bg: rgba(0,0,0,0.6);
+    --skills-bg: rgba(255,255,255,0.2);
+    --item-bg: rgba(0,0,0,0.8);
+    --item-shadow: rgba(255,255,255,0.3);
+    --item-hover-shadow: rgba(255,255,255,0.5);
+    --label-hover-bg: var(--text-color);
+    --label-hover-color: var(--accent-color);
+    /* Theme toggle variables for dark mode */
+    --slider-bg: var(--bg-color);
+    --knob-bg: white;
+  }
+
+  body {
+    margin: 0;
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: row;
+  }
+  a {
+    color: var(--text-color);
+    font-weight: bold;
+    text-decoration: none;
+    transition: color 0.3s ease;
+  }
+  a:hover, a:focus {
+    color: var(--accent-color);
+    outline: none;
+  }
+
+  /* Sidebar styles */
+  .sidebar {
+    background: var(--sidebar-bg);
+    width: 230px;
+    min-width: 230px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 2rem 1rem;
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    overflow-y: auto;
+    transition: transform 0.3s ease;
+    z-index: 1000;
+  }
+  .sidebar img {
+    width: 140px;
+    height: 140px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 1rem;
+    border: 3px solid var(--border-color);
+    transition: transform 0.4s ease, box-shadow 0.4s ease;
+  }
+  .sidebar img:hover,
+  .sidebar img:focus {
+    transform: scale(1.1);
+    box-shadow: 0 0 25px 5px var(--glow-color);
+    outline: none;
+  }
+  .sidebar h1 {
+    font-size: 1.5rem;
+    text-align: center;
+    margin-bottom: 0.5rem;
+  }
+  .sidebar p {
+    font-size: 1rem;
+    font-style: italic;
+    margin-bottom: 2rem;
+    text-align: center;
+  }
+  .sidebar nav {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    width: 100%;
+  }
+  .sidebar nav label {
+    display: block;
+    text-align: center;
+    padding: 0.7rem 1rem;
+    border-radius: 8px;
+    font-weight: bold;
+    background: var(--label-bg);
+    color: var(--text-color);
+    cursor: pointer;
+    transition: all 0.3s ease, transform 0.3s ease;
+    font-size: 1.1rem;
+    user-select: none;
+  }
+  .sidebar nav label:hover,
+  .sidebar nav label:focus {
+    background: var(--label-hover-bg);
+    color: var(--label-hover-color);
+    transform: scale(1.1);
+    outline: none;
+  }
+
+  /* Hide radio buttons */
+  input[type="radio"] {
+    display: none;
+  }
+
+  /* Main content */
+  .content {
+    margin-left: 230px;
+    padding: 3rem 2rem;
+    flex: 1;
+    min-width: 0; /* prevent overflow */
+  }
+  section {
+    display: none;
+    animation: fadeIn 0.8s ease;
+  }
+  /* Show sections based on checked radio */
+  #about:checked ~ .content #section-about,
+  #skills:checked ~ .content #section-skills,
+  #portfolio:checked ~ .content #section-portfolio,
+  #contact:checked ~ .content #section-contact {
+    display: block;
+  }
+  section h2 {
+    font-size: 3rem;
+    margin-bottom: 1.5rem;
+    border-bottom: 3px solid var(--border-color);
+    display: inline-block;
+  }
+  section p {
+    font-size: 1.4rem;
+    line-height: 1.8;
+    max-width: 900px;
+    word-wrap: break-word;
+  }
+
+  /* Skills */
+  .skills ul {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px,1fr));
+    gap: 1rem;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  .skills li {
+    background: var(--skills-bg);
+    border: 2px solid var(--border-color);
+    padding: 1rem;
+    border-radius: 8px;
+    text-align: center;
+    font-size: 1.2rem;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    color: var(--text-color);
+    word-wrap: break-word;
+  }
+  .skills li:hover,
+  .skills li:focus {
+    transform: scale(1.1);
+    box-shadow: 0 0 20px 5px var(--glow-color);
+    background: var(--skills-bg);
+    outline: none;
+  }
+
+  /* Portfolio */
+  .gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px,1fr));
+    gap: 1rem;
+  }
+  .gallery .item {
+    background: var(--item-bg);
+    padding: 6rem 1rem;
+    text-align: center;
+    font-weight: bold;
+    border-radius: 12px;
+    box-shadow: 2px 2px 8px var(--item-shadow);
+    font-size: 1.4rem;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    word-wrap: break-word;
+  }
+  .gallery .item:hover,
+  .gallery .item:focus {
+    transform: translateY(-10px) scale(1.05);
+    box-shadow: 6px 8px 14px var(--item-hover-shadow);
+    outline: none;
+  }
+
+  /* Contact */
+  .contact a {
+    font-size: 1.3rem;
+  }
+
+  /* Footer */
+  footer {
+    margin-top: 3rem;
+    text-align: center;
+    font-size: 1.2rem;
+    color: var(--text-color);
+    padding-top: 1rem;
+    border-top: 1px solid var(--border-color);
+  }
+
+  /* Animation */
+  @keyframes fadeIn {
+    from {opacity:0; transform: translateY(20px);}
+    to {opacity:1; transform: translateY(0);}
+  }
+
+  /* Hamburger menu button */
+  .hamburger {
+    display: none;
+    position: fixed;
+    top: 1rem;
+    left: 1rem;
+    width: 35px;
+    height: 30px;
+    flex-direction: column;
+    justify-content: space-between;
+    cursor: pointer;
+    z-index: 1100;
+  }
+  .hamburger span {
+    display: block;
+    height: 4px;
+    background: var(--border-color);
+    border-radius: 2px;
+    transition: all 0.3s ease;
+  }
+
+  /* Theme toggle */
+  .theme-toggle {
+    position: fixed;
+    top: 1rem;
+    right: 1rem;
+    display: inline-block;
+    width: 60px;
+    height: 34px;
+    z-index: 1100;
+  }
+
+  .theme-toggle input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+
+  .slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: var(--slider-bg);
+    transition: .4s;
+    border-radius: 34px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 8px;
+    border: 2px solid var(--border-color); /* Outline/border to the toggle button, matching theme */
+  }
+
+  .slider::before {
+    content: "☀️";
+    font-size: 16px;
+    z-index: 1;
+  }
+
+  .slider::after {
+    content: "🌙";
+    font-size: 16px;
+    z-index: 1;
+  }
+
+  .knob {
+    position: absolute;
+    height: 26px;
+    width: 26px;
+    left: 4px;
+    top: 50%; /* Modified: Center vertically using top:50% */
+    transform: translateY(-50%); /* Modified: Adjust for exact vertical centering */
+    background-color: var(--knob-bg);
+    transition: .4s;
+    border-radius: 50%;
+    z-index: 2;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  }
+
+  .theme-toggle input:checked + .slider .knob {
+    transform: translateY(-50%) translateX(26px); /* Modified: Include vertical centering in checked state */
+  }
+
+  /* Responsive styles */
+  @media (max-width: 900px) {
+    body {
+      flex-direction: column;
+    }
+    .sidebar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: auto;
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.5rem 1rem;
+      border-bottom: 2px solid var(--border-color);
+      transform: translateY(0);
+      overflow: visible;
+      z-index: 1000;
+    }
+    .sidebar img {
+      width: 60px;
+      height: 60px;
+      margin: 0;
+      border: 2px solid var(--border-color);
+      flex-shrink: 0;
+    }
+    .sidebar h1 {
+      font-size: 1.2rem;
+      margin: 0 1rem;
+      white-space: nowrap;
+      flex-shrink: 1;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .sidebar p {
+      display: none;
+    }
+    .sidebar nav {
+      flex-direction: column;
+      position: fixed;
+      top: 60px;
+      left: 0;
+      width: 100%;
+      background: var(--sidebar-bg);
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease;
+      border-bottom: 2px solid var(--border-color);
+      z-index: 999;
+    }
+    /* Show nav when toggled */
+    #nav-toggle:checked + .sidebar nav {
+      max-height: 500px; /* enough to show all nav items */
+    }
+    .sidebar nav label {
+      padding: 1rem;
+      font-size: 1.1rem;
+      background: var(--label-bg);
+      border-radius: 0;
+      border-bottom: 1px solid var(--border-color);
+      cursor: pointer;
+      text-align: left;
+      color: var(--text-color);
+    }
+    .sidebar nav label:hover,
+    .sidebar nav label:focus {
+      background: var(--label-hover-bg);
+      color: var(--label-hover-color);
+      transform: none;
+      outline: none;
+    }
+    .content {
+      margin-left: 0;
+      padding: 5rem 1.5rem 3rem;
+      min-width: 0;
+    }
+    section h2 {
+      font-size: 2.2rem;
+    }
+    section p {
+      font-size: 1.2rem;
+      max-width: 100%;
+    }
+    .skills ul {
+      grid-template-columns: repeat(auto-fit, minmax(180px,1fr));
+      gap: 0.8rem;
+    }
+    .skills li {
+      font-size: 1rem;
+      padding: 0.8rem;
+    }
+    .gallery {
+      grid-template-columns: repeat(auto-fit, minmax(180px,1fr));
+      gap: 0.8rem;
+    }
+    .gallery .item {
+      padding: 4rem 0.5rem;
+      font-size: 1.1rem;
+    }
+    footer {
+      font-size: 1rem;
+      padding-top: 0.8rem;
+    }
+    /* Show hamburger */
+    .hamburger {
+      display: flex;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .sidebar img {
+      width: 50px;
+      height: 50px;
+    }
+    .sidebar h1 {
+      font-size: 1rem;
+      margin-right: 0.5rem;
+    }
+    .sidebar nav label {
+      font-size: 0.95rem;
+      padding: 0.8rem 1rem;
+    }
+    section h2 {
+      font-size: 1.8rem;
+    }
+    section p {
+      font-size: 1rem;
+    }
+    .skills ul {
+      grid-template-columns: 1fr;
+      gap: 0.6rem;
+    }
+    .gallery {
+      grid-template-columns: 1fr;
+      gap: 0.6rem;
+    }
+    .gallery .item {
+      padding: 3rem 0.5rem;
+      font-size: 1rem;
+    }
+  }
+</style>
+</head>
+<body>
+
+  <!-- Navigation toggle for hamburger -->
+  <input type="checkbox" id="nav-toggle" style="display:none" />
+
+  <!-- Hamburger button -->
+  <label for="nav-toggle" class="hamburger" aria-label="Toggle navigation menu" tabindex="0">
+    <span></span>
+    <span></span>
+    <span></span>
+  </label>
+
+  <!-- Theme toggle -->
+  <label class="theme-toggle" aria-label="Toggle dark mode">
+    <input type="checkbox" id="dark-mode">
+    <span class="slider">
+      <span class="knob"></span>
+    </span>
+  </label>
+
+  <!-- Sidebar -->
+  <aside class="sidebar" role="navigation" aria-label="Primary navigation">
+    <img src="saloni.png" alt="Saloni Singh Shekhawat" tabindex="0" />
+    <h1 tabindex="0">Saloni Singh Shekhawat</h1>
+    <p>Fashion Designer | Jaipur</p>
+    <nav>
+      <label for="about" tabindex="0">About</label>
+      <label for="skills" tabindex="0">Skills</label>
+      <label for="portfolio" tabindex="0">Portfolio</label>
+      <label for="contact" tabindex="0">Contact</label>
+    </nav>
+  </aside>
+
+  <!-- Radio buttons for content toggle -->
+  <input type="radio" id="about" name="nav" checked style="display:none" />
+  <input type="radio" id="skills" name="nav" style="display:none" />
+  <input type="radio" id="portfolio" name="nav" style="display:none" />
+  <input type="radio" id="contact" name="nav" style="display:none" />
+
+  <!-- Main Content -->
+  <main class="content" role="main">
+    <section id="section-about" tabindex="0">
+      <h2>About Me</h2>
+      <p>
+       I am a passionate fashion designer, holding a B.Voc degree from Ellen College of Design, Jaipur, with a strong foundation in both traditional techniques and modern design principles. I specialize in blending heritage-inspired craftsmanship with contemporary aesthetics to create designs that are not only elegant but also sustainable and timeless. My work reflects a deep understanding of fabrics, textures, and cultural motifs, while catering to the needs of modern lifestyles. Committed to innovation and meticulous attention to detail, I strive to craft pieces that are visually striking, meaningful, and enduring, demonstrating both creativity and professionalism in every aspect of design.
+      </p>
+    </section>
+
+    <section id="section-skills" class="skills" tabindex="0">
+      <h2>Skills</h2>
+      <ul>
+        <li tabindex="0">Fashion Illustration</li>
+        <li tabindex="0">Textile Design & Fabric Knowledge</li>
+        <li tabindex="0"> Draping</li>
+        <li tabindex="0">Embroidery & Surface Ornamentation</li>
+        <li tabindex="0">Trend Forecasting</li>
+        <li tabindex="0">Styling & Wardrobe Consultation</li>
+        <li tabindex="0">Sustainable Fashion Practices</li>
+        <li tabindex="0">Pattern Making </li>
+      </ul>
+    </section>
+
+    <section id="section-portfolio" tabindex="0">
+      <h2>Portfolio</h2>
+      <div class="gallery">
+        <div class="item" tabindex="0">Project 1</div>
+        <div class="item" tabindex="0">Project 2</div>
+        <div class="item" tabindex="0">Project 3</div>
+        <div class="item" tabindex="0">Project 4</div>
+      </div>
+    </section>
+
+    <section id="section-contact" tabindex="0">
+      <h2>Contact</h2>
+      <p class="contact">Email: <a href="mailto:saloni.shekhawat@example.com">saloni.shekhawat@example.com</a></p>
+      <p class="contact">Instagram: <a href="https://www.instagram.com/saloonii_/" target="_blank" rel="noopener noreferrer">@saloonii</a></p>
+      <footer
